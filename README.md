@@ -9,5 +9,5 @@ In this analysis, various aspects of long-COVID are explored in a sample of 793 
 ## The results reveal that...
 
 ## Programming Language
-* R: Data Exploration and Cleaning
+* R: Data Exploration, Cleaning, Clustering
 * Python: Data Partition, Transformation Pipeline, Modeling, Model Evaluation
