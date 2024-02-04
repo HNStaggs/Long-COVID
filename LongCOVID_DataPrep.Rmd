@@ -3917,45 +3917,43 @@ prop.test(x = c(115, 283),
 
 ## Remove Highly Correlated Features with less relationship with PCS outcome
 ```{r}
-all_vars <- c('global_qol_scale', 'infection_frequency', 'initial_symptom_score', 'persistent_symptom_score', 'pre_pandemic',
-                'peri_pandemic', 'peri_infection', 'post_infection', 'promis_cog_score', 'hit6_score', 'fatigue_score',
-                'gad7_tot_score', 'phq9_total', 'pss_overall_score', 'social_support_score', 'dvprs_score', 'dyspnoea_12_score',
-                'BMI', 'duration', 'psqi_glob', 'mental', 'vs_p_rt_mn_s', 'f_c_rt_mn', 'cpt_profile', 'gender', 'race', 'ethnicity', 
-              'racial_stress', 'nicotine_use', 'rehab', 'unemployment_covid', 'financial_stress_1', 'func_status_1', 
-              'pcfs_grade_status', 'meds', 'tbi_prob', 'tbi_covid', 'vacc_bi', 'cardio_bi')
+trim_all <- c('participant_type',
+'gender',
+'race',
+'ethnicity',
+'nicotine_status',
+'rehab_status',
+'unemployment_covid',
+'vaccine_menstrual',
+'med_access',
+'cpt_profile',
+'sus_att',
+'vacc_bi',
+'cardio_bi',
+'tbi_prob',
+'pcs_diag',
+'age',
+'global_qol_scale',
+'initial_symptom_score',
+'pre_pandemic',
+'promis_cog_score', 
+'hit6_score', 
+'fatigue_score',
+'gad7_tot_score', 
+'phq9_total', 
+'pss_overall_score',
+'social_support_score', 
+'dvprs_score', 
+'dyspnoea_12_score',
+'BMI', 
+'duration', 
+'psqi_glob', 
+'mental',
+'racial_stress',
+'fin_stress')
 
-all_nums <- c('global_qol_scale', 'infection_frequency', 'initial_symptom_score', 'persistent_symptom_score', 'pre_pandemic',
-                'peri_pandemic', 'peri_infection', 'post_infection', 'promis_cog_score', 'hit6_score', 'fatigue_score',
-                'gad7_tot_score', 'phq9_total', 'pss_overall_score', 'social_support_score', 'dvprs_score', 'dyspnoea_12_score',
-                'BMI', 'duration', 'psqi_glob', 'mental', 'vs_p_rt_mn_s', 'f_c_rt_mn') 
-  
-  
-all_cats <- c('cpt_profile', 'gender', 'race', 'ethnicity', 
-              'racial_stress', 'nicotine_use', 'rehab', 'unemployment_covid', 'financial_stress_1', 'func_status_1', 
-              'pcfs_grade_status', 'meds', 'tbi_prob', 'tbi_covid', 'vacc_bi', 'cardio_bi')
-
-
-
-trim_nums <- c('global_qol_scale', 'infection_frequency', 'initial_symptom_score', 'pre_pandemic',
-                'post_infection', 'promis_cog_score', 'hit6_score', 'fatigue_score',
-                'gad7_tot_score', 'phq9_total', 'pss_overall_score', 'social_support_score', 'dvprs_score', 'dyspnoea_12_score',
-                'BMI', 'duration', 'psqi_glob', 'mental', 'vs_p_rt_mn_s', 'f_c_rt_mn') 
-               
-trim_cats <- c('cpt_profile', 'gender', 'race', 'ethnicity', 
-              'racial_stress', 'nicotine_use', 'rehab', 'unemployment_covid', 'financial_stress_1', 'func_status_1', 
-              'pcfs_grade_status', 'meds', 'tbi_prob', 'tbi_covid', 'vacc_bi', 'cardio_bi')
-
-
-
-trim_all <- c('global_qol_scale', 'initial_symptom_score', 'pre_pandemic',
-              'promis_cog_score', 'hit6_score', 'fatigue_score', 'participant_type',
-              'gad7_tot_score', 'phq9_total', 'pss_overall_score', 'social_support_score', 'dvprs_score', 'dyspnoea_12_score',
-              'BMI', 'duration', 'psqi_glob', 'mental', 'vs_p_rt_mn_s', 'f_c_rt_mn','cpt_profile', 'gender', 'race', 'ethnicity',
-              'racial_stress', 'nicotine_status', 'rehab_status', 'unemployment_covid', 'fin_stress', 'func_status_1', 
-              'pcfs_grade_status', 'meds', 'tbi_prob', 'vacc_bi', 'cardio_bi', 'vaccine_menstrual',
-              'med_access', 'cluster', 'pcs_diag')
-
-cog_all <- c('promis_cog_score', 'pcs_diag', 'vs_a_rt_mn_s', 'vs_a_rt_sd_s', 'vs_a_acc_s', 
+cog_all <- c('promis_cog_score', 'pcs_diag', 'cluster',
+             'vs_a_rt_mn_s', 'vs_a_rt_sd_s', 'vs_a_acc_s', 
              'vs_p_rt_mn_s', 'vs_p_rt_sd_s', 'vs_p_acc_s',
              'vs_a_rt_mn_l', 'vs_a_rt_sd_l', 'vs_a_acc_l',
              'vs_p_rt_mn_l', 'vs_p_rt_sd_l', 'vs_p_acc_l',
@@ -3963,31 +3961,11 @@ cog_all <- c('promis_cog_score', 'pcs_diag', 'vs_a_rt_mn_s', 'vs_a_rt_sd_s', 'vs
              'f_i_rt_mn', 'f_i_rt_sd', 'f_i_acc',
              'ds_acc', 'ds_rt_mn', 'ds_rt_sd', 
              'read_rt_sum', 'type_rt_sum', 
-             'sus_att', 'cpt_profile',
+             'co', 'om', 't_r', 'd', 'hrt_m', 'hrt_s', 'hrt_v',
+             'b_diff', 'om_diff', 'co_diff', 
              'rat_e_rt_mn', 'rat_e_rt_sd', 'rat_e_acc',
              'rat_m_rt_mn', 'rat_m_rt_sd', 'rat_m_acc',
              'rat_h_rt_mn', 'rat_h_rt_sd', 'rat_h_acc')
-
-all <- c('global_qol_scale', 'initial_symptom_score', 'pre_pandemic',
-              'promis_cog_score', 'hit6_score', 'fatigue_score', 'participant_type',
-              'gad7_tot_score', 'phq9_total', 'pss_overall_score', 'social_support_score', 'dvprs_score', 'dyspnoea_12_score',
-              'BMI', 'duration', 'psqi_glob', 'mental', 'vs_p_rt_mn_s', 'f_c_rt_mn','cpt_profile', 'gender', 'race', 'ethnicity',
-              'racial_stress', 'nicotine_status', 'rehab_status', 'unemployment_covid', 'fin_stress', 'func_status_1', 
-              'pcfs_grade_status', 'meds', 'tbi_prob', 'vacc_bi', 'cardio_bi', 'vaccine_menstrual',
-              'med_access', 'pcs_diag', 'promis_cog_score', 'cluster', 'pcs_diag', 'vs_a_rt_mn_s', 'vs_a_rt_sd_s', 'vs_a_acc_s', 
-             'vs_p_rt_mn_s', 'vs_p_rt_sd_s', 'vs_p_acc_s',
-             'vs_a_rt_mn_l', 'vs_a_rt_sd_l', 'vs_a_acc_l',
-             'vs_p_rt_mn_l', 'vs_p_rt_sd_l', 'vs_p_acc_l',
-             'f_c_rt_mn', 'f_c_rt_sd', 'f_c_acc',
-             'f_i_rt_mn', 'f_i_rt_sd', 'f_i_acc',
-             'ds_acc', 'ds_rt_mn', 'ds_rt_sd', 
-             'read_rt_sum', 'type_rt_sum', 
-             'sus_att', 'cpt_profile',
-             'rat_e_rt_mn', 'rat_e_rt_sd', 'rat_e_acc',
-             'rat_m_rt_mn', 'rat_m_rt_sd', 'rat_m_acc',
-             'rat_h_rt_mn', 'rat_h_rt_sd', 'rat_h_acc')
-
-
 ```
 
 ```{r}
@@ -4013,7 +3991,7 @@ final_data1 <- clean[ , (names(clean) %in% trim_all)]
 #final_data1$race
 
 # Matched dataset for Veterans/Civilians
-match_data1 <- samp_match_data[ , (names(samp_match_data) %in% all)]
+match_data1 <- samp_match_data[ , (names(samp_match_data) %in% trim_all)]
 
 # Vetify features
 #colnames(match_data1)
@@ -4024,8 +4002,6 @@ match_data1 <- samp_match_data[ , (names(samp_match_data) %in% all)]
 #Cognitive data for brain fog
 cog_data1 <- clean[ , (names(clean) %in% cog_all)]
 
-all_data1 <- clean[ , (names(clean) %in% all)]
-
 ```
 
 # Export clean datasets for modeling
@@ -4033,7 +4009,7 @@ all_data1 <- clean[ , (names(clean) %in% all)]
 final_data <- write_csv(final_data1, 'final_data.csv')
 match_data <- write_csv(match_data1, 'match_data.csv')
 cog_data <- write_csv(cog_data1, 'cog_data.csv')
-all_data <- write_csv(all_data1, 'all_data.csv')
+#all_data <- write_csv(all_data1, 'all_data.csv')
 #dropmatch_data <- write_csv(dropmatch_data1, 'drop_data.csv')
 ```
 
