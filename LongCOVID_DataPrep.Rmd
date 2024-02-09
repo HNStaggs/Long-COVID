@@ -51,7 +51,7 @@ library(MatchIt)
 ### Remove space function
 ```{r}
 # Iterate over all files to remove spaces from column names))
-#directory_path <- "~/Post COVID Study/Gorilla Data"
+directory_path <- "~/Post COVID Study/Gorilla Data"
 
 # Function to remove spaces from column names in CSV files within a directory
 #remove_spaces_from_column_names <- function(directory_path) {
@@ -753,7 +753,7 @@ rc4$introduction_timestamp <- as.Date(rc4$introduction_timestamp, format = '%m/%
 rc_prep <- full_join(rc1, rc3[ , c(colnames(rc1))])
 rc <- full_join(rc_prep, rc4[ , c(colnames(rc1))])
 
-#View(rc)
+View(rc)
 
 #Check dimensions of data
 dim(rc) #902 rows x. 172 columns
@@ -941,6 +941,7 @@ rc%>%filter(vaccine_first_dose > '2023-11-01')%>% summarise(prolific_id, vaccine
 
 # Score PSQI
 ```{r}
+setwd("~/Post COVID Study")
 psqi <- read_csv("psqi_data.csv")
 #View(psqi_add)
 
@@ -970,7 +971,7 @@ psqi_metrics$psqi_glob <- as.numeric(psqi_metrics$psqi_glob)
 # Combine PSQI data with other self-report data, and then drop People without full redcap data
 ```{r}
 rc <- merge(rc, psqi_metrics, by = 'prolific_id', all.x = TRUE)
-View(rc)
+#View(rc)
 
 #Filter out people with missing data
 rc <- rc %>% filter(!is.na(vdaq_score))
@@ -1672,12 +1673,12 @@ table(clean$sex)
 prop.table(table(clean$sex))
 
 #Vet
-table(clean %>% filter(participant_type == 'Vet') %>% summarise(vet_s = sex))
-prop.table(table(clean %>% filter(participant_type == 'Vet') %>% summarise(vet_s = sex)))
+table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_s = sex))
+prop.table(table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_s = sex)))
 
 #Civ
-table(clean %>% filter(participant_type == 'Civ') %>% summarise(civ_s = sex))
-prop.table(table(clean %>% filter(participant_type == 'Civ') %>% summarise(civ_s = sex)))
+table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_s = sex))
+prop.table(table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_s = sex)))
 ```
 ## Gender
 ```{r}
@@ -1686,12 +1687,12 @@ table(clean$gender)
 prop.table(table(clean$gender))
 
 #Vet
-table(clean %>% filter(participant_type == 'Vet') %>% summarise(vet_g = gender))
-prop.table(table(clean %>% filter(participant_type == 'Vet') %>% summarise(vet_g = gender)))
+table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_g = gender))
+prop.table(table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_g = gender)))
 
 #Civ
-table(clean %>% filter(participant_type == 'Civ') %>% summarise(civ_g = gender))
-prop.table(table(clean %>% filter(participant_type == 'Civ') %>% summarise(civ_g = gender)))
+table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_g = gender))
+prop.table(table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_g = gender)))
 ```
 ## Ethnicity
 ```{r}
@@ -1702,12 +1703,12 @@ table(clean$ethnicity)
 prop.table(table(clean$ethnicity))
 
 #Vet
-table(clean %>% filter(participant_type == 'Vet') %>% summarise(vet_e = ethnicity))
-prop.table(table(clean %>% filter(participant_type == 'Vet') %>% summarise(vet_e = ethnicity)))
+table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_e = ethnicity))
+prop.table(table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_e = ethnicity)))
 
 #Civ
-table(clean %>% filter(participant_type == 'Civ') %>% summarise(civ_e = ethnicity))
-prop.table(table(clean %>% filter(participant_type == 'Civ') %>% summarise(civ_e = ethnicity)))
+table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_e = ethnicity))
+prop.table(table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_e = ethnicity)))
 ```
 ## Area Type
 ```{r}
@@ -1716,12 +1717,12 @@ table(clean$residence_location_type)
 prop.table(table(clean$residence_location_type))
 
 #Vet
-table(clean %>% filter(participant_type == 'Vet') %>% summarise(vet_a = residence_location_type))
-prop.table(table(clean %>% filter(participant_type == 'Vet') %>% summarise(vet_a = residence_location_type)))
+table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_a = residence_location_type))
+prop.table(table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_a = residence_location_type)))
 
 #Civ
-table(clean %>% filter(participant_type == 'Civ') %>% summarise(civ_a = residence_location_type))
-prop.table(table(clean %>% filter(participant_type == 'Civ') %>% summarise(civ_a = residence_location_type)))
+table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_a = residence_location_type))
+prop.table(table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_a = residence_location_type)))
 ```
 ## Race
 ```{r}
@@ -1730,12 +1731,12 @@ table(clean$race)
 prop.table(table(clean$race))
 
 #Vet
-table(clean %>% filter(participant_type == 'Vet') %>% summarise(vet_r = race))
-prop.table(table(clean %>% filter(participant_type == 'Vet') %>% summarise(vet_r = race)))
+table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_r = race))
+prop.table(table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_r = race)))
 
 #Civ
-table(clean %>% filter(participant_type == 'Civ') %>% summarise(civ_r = race))
-prop.table(table(clean %>% filter(participant_type == 'Civ') %>% summarise(civ_r = race)))
+table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_r = race))
+prop.table(table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_r = race)))
 ```
 ## Degree
 ```{r}
@@ -1744,12 +1745,12 @@ table(clean$edu_degree)
 prop.table(table(clean$edu_degree))
 
 #Vet
-table(clean %>% filter(participant_type == 'Vet') %>% summarise(vet_d = edu_degree))
-prop.table(table(clean %>% filter(participant_type == 'Vet') %>% summarise(vet_d = edu_degree)))
+table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_d = edu_degree))
+prop.table(table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_d = edu_degree)))
 
 #Civ
-table(clean %>% filter(participant_type == 'Civ') %>% summarise(civ_d = edu_degree))
-prop.table(table(clean %>% filter(participant_type == 'Civ') %>% summarise(civ_d = edu_degree)))
+table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_d = edu_degree))
+prop.table(table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_d = edu_degree)))
 ```
 
 ## PASC Diagnosis
@@ -1759,12 +1760,12 @@ table(clean$pcs_diag)
 prop.table(table(clean$pcs_diag))
 
 #Vet
-table(clean %>% filter(participant_type == 'Vet') %>% summarise(vet_p = pcs_diag))
-prop.table(table(clean %>% filter(participant_type == 'Vet') %>% summarise(vet_p = pcs_diag)))
+table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_p = pcs_diag))
+prop.table(table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_p = pcs_diag)))
 
 #Civ
-table(clean %>% filter(participant_type == 'Civ') %>% summarise(civ_p = pcs_diag))
-prop.table(table(clean %>% filter(participant_type == 'Civ') %>% summarise(civ_p = pcs_diag)))
+table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_p = pcs_diag))
+prop.table(table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_p = pcs_diag)))
 ```
 ## Vaccine Status
 ```{r}
@@ -1773,12 +1774,12 @@ table(clean$vaccboost)
 prop.table(table(clean$vaccboost))
 
 #Vet
-table(clean %>% filter(participant_type == 'Vet') %>% summarise(vet_v = vaccboost))
-prop.table(table(clean %>% filter(participant_type == 'Vet') %>% summarise(vet_v = vaccboost)))
+table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_v = vaccboost))
+prop.table(table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_v = vaccboost)))
 
 #Civ
-table(clean %>% filter(participant_type == 'Civ') %>% summarise(civ_v = vaccboost))
-prop.table(table(clean %>% filter(participant_type == 'Civ') %>% summarise(civ_v = vaccboost)))
+table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_v = vaccboost))
+prop.table(table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_v = vaccboost)))
 ```
 ## Reading Speed
 ```{r}
@@ -3839,14 +3840,14 @@ clean$sleep_prop[is.na(clean$sleep_prop)] <- 0
 #View(clean)
 # Run K means
 set.seed(2)
-kmns_symp <- kmeans(clean[ , c(194:196)], centers = 6)  # Proportion of sleep, mental health, and physical symptoms
+kmns_symp <- kmeans(clean[ , c(184:186)], centers = 6)  # Proportion of sleep, mental health, and physical symptoms
 
 # Look at K means information
 kmns_symp
 ## 
 
 # Visualize clusters
-fviz_cluster(kmns_symp, data = clean[ , 194:196], geom = c('point','text')) + theme_minimal()
+fviz_cluster(kmns_symp, data = clean[ , c(184:186)], geom = c('point','text')) + theme_minimal()
 
 # Cluster assignments as grouping variable
 clean$cluster <- as.factor(kmns_symp$cluster)
@@ -3863,6 +3864,116 @@ oneway.test(log(t_r) ~ cluster, data = clean) # p = .04045
 
 
 ```
+
+# Bringing in Item Level PROMIS Cog to un-do reverse-scoring
+```{R}
+#setwd("~/Post COVID Study")
+
+#REad in files
+cog1 <- read_csv('cog_c1.csv')
+cog3 <- read_csv('cog_c3.csv')
+cog4 <- read_csv('cog_c4.csv')
+
+#View(cog4)
+
+#Update column names
+colnames(cog4)[1] <- 'prolific_id'
+
+#Combine datasets
+promis_list <- list(cog1, cog3, cog4)
+
+#merge all data frames together
+promis <- Reduce(function(x, y) merge(x, y, all=TRUE), promis_list)
+
+#Drop NA rows
+#View(promis)
+promis <- drop_na(promis)
+
+
+#Re-do scoring
+promis$promis_cog_1[promis$promis_cog_1 == 1] <- 50
+promis$promis_cog_2[promis$promis_cog_2 == 1] <- 50
+promis$promis_cog_3[promis$promis_cog_3 == 1] <- 50
+promis$promis_cog_4[promis$promis_cog_4 == 1] <- 50
+promis$promis_cog_5[promis$promis_cog_5 == 1] <- 50
+promis$promis_cog_6[promis$promis_cog_6 == 1] <- 50
+promis$promis_cog_7[promis$promis_cog_7 == 1] <- 50
+promis$promis_cog_8[promis$promis_cog_8 == 1] <- 50
+
+promis$promis_cog_1[promis$promis_cog_1 == 2] <- 40
+promis$promis_cog_2[promis$promis_cog_2 == 2] <- 40
+promis$promis_cog_3[promis$promis_cog_3 == 2] <- 40
+promis$promis_cog_4[promis$promis_cog_4 == 2] <- 40
+promis$promis_cog_5[promis$promis_cog_5 == 2] <- 40
+promis$promis_cog_6[promis$promis_cog_6 == 2] <- 40
+promis$promis_cog_7[promis$promis_cog_7 == 2] <- 40
+promis$promis_cog_8[promis$promis_cog_8 == 2] <- 40
+
+promis$promis_cog_1[promis$promis_cog_1 == 3] <- 30
+promis$promis_cog_2[promis$promis_cog_2 == 3] <- 30
+promis$promis_cog_3[promis$promis_cog_3 == 3] <- 30
+promis$promis_cog_4[promis$promis_cog_4 == 3] <- 30
+promis$promis_cog_5[promis$promis_cog_5 == 3] <- 30
+promis$promis_cog_6[promis$promis_cog_6 == 3] <- 30
+promis$promis_cog_7[promis$promis_cog_7 == 3] <- 30
+promis$promis_cog_8[promis$promis_cog_8 == 3] <- 30
+
+promis$promis_cog_1[promis$promis_cog_1 == 4] <- 20
+promis$promis_cog_2[promis$promis_cog_2 == 4] <- 20
+promis$promis_cog_3[promis$promis_cog_3 == 4] <- 20
+promis$promis_cog_4[promis$promis_cog_4 == 4] <- 20
+promis$promis_cog_5[promis$promis_cog_5 == 4] <- 20
+promis$promis_cog_6[promis$promis_cog_6 == 4] <- 20
+promis$promis_cog_7[promis$promis_cog_7 == 4] <- 20
+promis$promis_cog_8[promis$promis_cog_8 == 4] <- 20
+
+promis$promis_cog_1[promis$promis_cog_1 == 5] <- 10
+promis$promis_cog_2[promis$promis_cog_2 == 5] <- 10
+promis$promis_cog_3[promis$promis_cog_3 == 5] <- 10
+promis$promis_cog_4[promis$promis_cog_4 == 5] <- 10
+promis$promis_cog_5[promis$promis_cog_5 == 5] <- 10
+promis$promis_cog_6[promis$promis_cog_6 == 5] <- 10
+promis$promis_cog_7[promis$promis_cog_7 == 5] <- 10
+promis$promis_cog_8[promis$promis_cog_8 == 5] <- 10
+
+promis$promis_cog_1 <- promis$promis_cog_1 / 10
+promis$promis_cog_2 <- promis$promis_cog_2 / 10
+promis$promis_cog_3 <- promis$promis_cog_3 / 10
+promis$promis_cog_4 <- promis$promis_cog_4 / 10
+promis$promis_cog_5 <- promis$promis_cog_5 / 10
+promis$promis_cog_6 <- promis$promis_cog_6 / 10
+promis$promis_cog_7 <- promis$promis_cog_7 / 10
+promis$promis_cog_8 <- promis$promis_cog_8 / 10
+
+promis$promis_score <- promis$promis_cog_1+promis$promis_cog_2+promis$promis_cog_3+promis$promis_cog_4+
+  promis$promis_cog_5+promis$promis_cog_6+promis$promis_cog_7+promis$promis_cog_8
+
+promis_list <- c('prolific_id', 'promis_score')
+promis_trim <- promis[ , promis_list] 
+#View(promis_trim)
+
+# Fix incorrect IDs before merging
+promis_trim$prolific_id[promis_trim$prolific_id == '6297567582d2ed2d88ae0450@email.prolific.co'] <- '6297567582d2ed2d88ae0450'
+promis_trim$prolific_id[promis_trim$prolific_id == '61097e7150203244f66caf5861097e7150203244f66caf58'] <- '61097e7150203244f66caf58'
+promis_trim$prolific_id[promis_trim$prolific_id == '63644514902f60174b4b29a1@email.prolific.co'] <- '63644514902f60174b4b29a1'
+promis_trim$prolific_id[promis_trim$prolific_id == '1/14/2021'] <- '55ae64defdf99b3f864653e7'
+promis_trim$prolific_id[promis_trim$prolific_id == '64385d841e0d55be48c9c8e4@email.prolific.co'] <- '64385d841e0d55be48c9c8e4'
+
+promis_trim$prolific_id[promis_trim$prolific_id == '500'] <- '28'
+promis_trim$prolific_id[promis_trim$prolific_id == '502'] <- '29'
+promis_trim$prolific_id[promis_trim$prolific_id == '510'] <- '67'
+promis_trim$prolific_id[promis_trim$prolific_id == '508'] <- '63'
+promis_trim$prolific_id[promis_trim$prolific_id == '512'] <- '68'
+promis_trim$prolific_id[promis_trim$prolific_id == '507'] <- '57'
+promis_trim$prolific_id[promis_trim$prolific_id == '41'] <- '43'
+
+
+#Combine new scoring with other features
+clean <- merge(clean, promis_trim, by = 'prolific_id', all.x=T)
+
+
+```
+
 
 # Making a Demographic Matched Sample to Compare Veterans to Civilians
 ```{r}
@@ -3905,6 +4016,7 @@ prop.test(x = c(115, 283),
           n = c(303, 806))  # Non-sig difference between samples
 ```
 
+
 # Data Preparation for Modeling
 * Check for highly correlated variables and collapse features
 * Train/Test Split
@@ -3914,11 +4026,13 @@ prop.test(x = c(115, 283),
 * Use grid search with cross validation to find optimal models with training set
 * Assess performance on test set: sens, spec, ROC, acc, confusion matrix figure, 
 * Focus on feature importance/contributions for clinical interpretation
+* Check for multicollinearity issues
 
 ## Remove Highly Correlated Features with less relationship with PCS outcome
 ```{r}
 trim_all <- c('participant_type',
 'gender',
+'sex',
 'race',
 'ethnicity',
 'nicotine_status',
@@ -3933,10 +4047,11 @@ trim_all <- c('participant_type',
 'tbi_prob',
 'pcs_diag',
 'age',
+'datediff',
 'global_qol_scale',
 'initial_symptom_score',
 'pre_pandemic',
-'promis_cog_score', 
+'promis_score', 
 'hit6_score', 
 'fatigue_score',
 'gad7_tot_score', 
@@ -3952,7 +4067,7 @@ trim_all <- c('participant_type',
 'racial_stress',
 'fin_stress')
 
-cog_all <- c('promis_cog_score', 'pcs_diag', 'cluster',
+cog_all <- c('promis_score', 'pcs_diag', 'cluster', 'datediff',
              'vs_a_rt_mn_s', 'vs_a_rt_sd_s', 'vs_a_acc_s', 
              'vs_p_rt_mn_s', 'vs_p_rt_sd_s', 'vs_p_acc_s',
              'vs_a_rt_mn_l', 'vs_a_rt_sd_l', 'vs_a_acc_l',
@@ -4009,8 +4124,7 @@ cog_data1 <- clean[ , (names(clean) %in% cog_all)]
 final_data <- write_csv(final_data1, 'final_data.csv')
 match_data <- write_csv(match_data1, 'match_data.csv')
 cog_data <- write_csv(cog_data1, 'cog_data.csv')
-#all_data <- write_csv(all_data1, 'all_data.csv')
-#dropmatch_data <- write_csv(dropmatch_data1, 'drop_data.csv')
+View(match_data)
 ```
 
 # Train/Test Pipeline
