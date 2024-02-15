@@ -2,7 +2,9 @@
 title: "Post-COVID Final Script"
 author: "Halee Staggs"
 date: "2023-11-01"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -43,6 +45,8 @@ library(Hmisc)
 library(factoextra)
 #install.packages('MatchIt')
 library(MatchIt)
+#install.packages('knitr')
+library(knitr)
 ```
 
 # Cleaning Pipeline to Standardize/Normalize Gorilla Data Output Files:
@@ -172,7 +176,7 @@ columns_to_extract <- vs_cols  # Specify list of columns to extract
 # Call the function
 vs_df <- extract_columns_from_files_with_1_string(directory_path, string_to_find, columns_to_extract)
 #View(vs_df)
-str(vs_df)
+#str(vs_df)
 ```
 
 # Typing test extract - 1
@@ -182,7 +186,7 @@ columns_to_extract <- ty_cols  # Specify list of columns to extract
 # Call the function
 ty1_df <- extract_columns_from_files_with_1_string(directory_path, string_to_find, columns_to_extract)
 #View(ty1_df)
-str(ty1_df)
+#str(ty1_df)
 ```
 
 # Typing test extract - 2
@@ -192,7 +196,7 @@ columns_to_extract <- ty_cols  # Specify list of columns to extract
 # Call the function
 ty2_df <- extract_columns_from_files_with_1_string(directory_path, string_to_find, columns_to_extract)
 #View(ty2_df)
-str(ty2_df)
+#str(ty2_df)
 ```
 
 # Typing test extract - 3
@@ -202,7 +206,7 @@ columns_to_extract <- ty_cols  # Specify list of columns to extract
 # Call the function
 ty3_df <- extract_columns_from_files_with_1_string(directory_path, string_to_find, columns_to_extract)
 #View(ty3_df)
-str(ty3_df)
+#str(ty3_df)
 ```
 
 
@@ -213,7 +217,7 @@ columns_to_extract <- rat_cols  # Specify list of columns to extract
 # Call the function
 rat_df <- extract_columns_from_files_with_1_string(directory_path, string_to_find, columns_to_extract)
 #View(rat_df)
-str(rat_df)
+#str(rat_df)
 ```
 
 # ID Linking information for cross-platform merging
@@ -224,7 +228,7 @@ columns_to_extract <- id_cols  # Specify list of columns to extract
 # Call the function
 id1_df <- extract_columns_from_files_with_1_string(directory_path, string_to_find, columns_to_extract)
 #View(id1_df)
-str(id1_df)
+#str(id1_df)
 ```
 
 # ID 2
@@ -234,7 +238,7 @@ columns_to_extract <- id_cols  # Specify list of columns to extract
 # Call the function
 id2_df <- extract_columns_from_files_with_1_string(directory_path, string_to_find, columns_to_extract)
 #View(id2_df)
-str(id2_df)
+#str(id2_df)
 ```
 
 # ID 3
@@ -244,7 +248,7 @@ columns_to_extract <- id_cols  # Specify list of columns to extract
 # Call the function
 id3_df <- extract_columns_from_files_with_1_string(directory_path, string_to_find, columns_to_extract)
 #View(id3_df)
-str(id3_df)
+#str(id3_df)
 ```
 
 # Flanker data extract
@@ -254,7 +258,7 @@ columns_to_extract <- fl_cols  # Specify list of columns to extract
 # Call the function
 fl_df <- extract_columns_from_files_with_1_string(directory_path, string_to_find, columns_to_extract)
 #View(fl_df)
-str(fl_df)
+#str(fl_df)
 ```
 
 # CPT Extract 1
@@ -264,7 +268,7 @@ columns_to_extract <- cpt_cols  # Specify list of columns to extract
 # Call the function
 cpt1_df <- extract_columns_from_files_with_1_string(directory_path, string_to_find, columns_to_extract)
 #View(cpt1_df)
-str(cpt1_df)
+#str(cpt1_df)
 ```
 
 # CPT Extract 2
@@ -274,7 +278,7 @@ columns_to_extract <- cpt_cols  # Specify list of columns to extract
 # Call the function
 cpt2_df <- extract_columns_from_files_with_1_string(directory_path, string_to_find, columns_to_extract)
 #View(cpt2_df)
-str(cpt2_df)
+#str(cpt2_df)
 ```
 
 # Digit Span extract
@@ -284,7 +288,7 @@ columns_to_extract <- ds_cols  # Specify list of columns to extract
 # Call the function
 ds_df <- extract_columns_from_files_with_1_string(directory_path, string_to_find, columns_to_extract)
 #View(ds_df)
-str(ds_df)
+#str(ds_df)
 ```
 
 # Load Cognitive Data
@@ -551,7 +555,8 @@ ds <- ds %>% filter(ztype == 'response_text_entry') %>% as.data.table()
 # ds metrics
 ds_metrics <- ds[, .(ds_acc = (sum(as.numeric(corr == 1))/10), ds_rt_mn = mean(as.numeric(rt)), ds_rt_sd = sd(as.numeric(rt))), 
                  keyby = .(gor_id)]
-View(ds_metrics)
+#View(ds_metrics)
+kable(head(ds_metrics))
 ```
 
 ## Continous Performance Test Scoring
@@ -590,7 +595,7 @@ error_metrics <- cpt3[, .(co = sum(resp == -1, na.rm = T)/25, om = (200-(sum(res
                         t_r = sum(resp == 1, na.rm = T)/200,
                         d = (sum(resp == -1, na.rm = T)/sum(resp == 1, na.rm = T))), 
                     keyby = .(gor_id)]
-error_metrics
+kable(head(error_metrics))
 ```
 
 ```{r}
@@ -600,7 +605,7 @@ cpt4 <- cpt2 %>% as.data.table() %>% filter(att == 1 & number != 3)
 # REACTION TIME DATA 
 rt_metrics <- cpt4[, .(hrt_m = mean(rt, na.rm = T), hrt_ml = mean(rt_log, na.rm = T), hrt_s = sd(rt, na.rm = T), hrt_sl = sd(rt_log, na.rm = T), hrt_v = (max(rt, na.rm = T)-min(rt, na.rm = T)), hrt_vl = (max(rt_log, na.rm = T)-min(rt_log, na.rm = T))),
                    keyby = .(gor_id)]
-rt_metrics
+kable(head(rt_metrics))
 ```
 
 ```{r}
@@ -616,7 +621,7 @@ sus_metrics$b6_rt[is.na(sus_metrics$b6_rt)] <- median(sus_metrics$b6_rt, na.rm =
 
 #Want a positive or zero value. Negative means that attention was not sustained.
 sus_metrics$b_diff <- sus_metrics$b1_rt-sus_metrics$b6_rt
-sus_metrics
+kable(head(sus_metrics))
 hist(sus_metrics$b_diff)
 ```
 ```{r}
@@ -641,7 +646,7 @@ co_metrics$b6co[is.na(co_metrics$b6co)] <- median(co_metrics$b6co, na.rm = T)
 
 #Want a positive or zero value. Negative means that attention was not sustained.
 co_metrics$co_diff <- co_metrics$b1co-co_metrics$b6co
-co_metrics
+kable(head(co_metrics))
 hist(co_metrics$co_diff)
 ```
 
@@ -666,7 +671,7 @@ om_metrics$b6om[is.na(om_metrics$b6om)] <- median(om_metrics$b6om, na.rm = T)
 
 #Want a positive or zero value. Negative means that attention was not sustained.
 om_metrics$om_diff <- om_metrics$b1om-om_metrics$b6om
-om_metrics
+kable(head(om_metrics))
 #hist(om_metrics$om_diff)
 ```
 
@@ -677,7 +682,7 @@ cpt5 <- cpt2 %>% as.data.table()
 per_metrics <- cpt5[, .(per_sum = sum(att > 1, na.rm = T), per_nt = sum(att > 1 & resp == 'incorrect', na.rm = T), 
                         per_t = sum(att > 1 & resp == 'correct', na.rm=T), per_max = max(att, na.rm=T)),
                    keyby = .(gor_id)]
-per_metrics
+kable(head(per_metrics))
 
 ```
 ```{r}
@@ -686,7 +691,7 @@ cpt_list <- list(error_metrics, rt_metrics, sus_metrics, per_metrics, om_metrics
 
 #merge all data frames together
 cpt_final <- Reduce(function(x, y) merge(x, y, all=TRUE), cpt_list)
-cpt_final
+#cpt_final
 
 ```
 
@@ -697,7 +702,7 @@ cog_list <- list(vs_final, fl_final, ds_metrics, type_final, cpt_final, rat_fina
 
 #merge all data frames together
 cog_final <- Reduce(function(x, y) merge(x, y, all=TRUE), cog_list)
-cog_final
+#cog_final
 
 #match prolific ID with gorilla ID for redcap merging
 id_match <- merge(cog_final, id[ , c(2,3)], by = 'gor_id', all.x = TRUE)
@@ -753,7 +758,7 @@ rc4$introduction_timestamp <- as.Date(rc4$introduction_timestamp, format = '%m/%
 rc_prep <- full_join(rc1, rc3[ , c(colnames(rc1))])
 rc <- full_join(rc_prep, rc4[ , c(colnames(rc1))])
 
-View(rc)
+#View(rc)
 
 #Check dimensions of data
 dim(rc) #902 rows x. 172 columns
@@ -3827,7 +3832,7 @@ clean$phys_ment_sleep <- paste(clean$phys_prop, clean$ment_prop, clean$sleep_pro
 # Look at all combinations of symptom domains
 table(clean$phys_ment_sleep) # Can see about 88 different subtypes
 
-# Update Nan, Nan, Nan subtype to 0, 0, 0 (this is healthy people without PASC)
+# Update Nan, Nan, Nan subtype to 0, 0, 0 (this is healthy people without any symptoms)
 clean$phys_ment_sleep[clean$phys_ment_sleep == 'NaN,NaN,NaN'] <- '0,0,0'
 clean$phys_prop[is.na(clean$phys_prop)] <- 0
 clean$ment_prop[is.na(clean$ment_prop)] <- 0
@@ -3861,7 +3866,8 @@ oneway.test(log(vs_p_rt_mn_s) ~ cluster, data = clean) # p = .003297
 oneway.test(log(vs_p_rt_mn_l) ~ cluster, data = clean) # p = .005468
 oneway.test(log(ds_rt_mn) ~ cluster, data = clean) # p = .03699
 oneway.test(log(t_r) ~ cluster, data = clean) # p = .04045
-
+chisq.test(clean$cluster, clean$pcs_diag)
+table(clean$cluster, clean$pcs_diag)
 
 ```
 
@@ -3974,6 +3980,12 @@ clean <- merge(clean, promis_trim, by = 'prolific_id', all.x=T)
 
 ```
 
+# Reduce some of the cognitive variable redundancy
+```{r}
+# R, n, and p values for each variable correlation.
+#rcorr(as.matrix(clean[ , (names(clean) %in% cog_corr)]), type="pearson")
+```
+
 
 # Making a Demographic Matched Sample to Compare Veterans to Civilians
 ```{r}
@@ -4012,8 +4024,8 @@ table(clean$pcs_diag)
 dim(clean)[1]
 
 #Two sample proportion test
-prop.test(x = c(115, 283),
-          n = c(303, 806))  # Non-sig difference between samples
+prop.test(x = c(114, 278),
+          n = c(298, 793))  # Non-sig difference between samples
 ```
 
 
@@ -4030,6 +4042,7 @@ prop.test(x = c(115, 283),
 
 ## Remove Highly Correlated Features with less relationship with PCS outcome
 ```{r}
+#View(clean)
 trim_all <- c('participant_type',
 'gender',
 'sex',
@@ -4081,6 +4094,92 @@ cog_all <- c('promis_score', 'pcs_diag', 'cluster', 'datediff',
              'rat_e_rt_mn', 'rat_e_rt_sd', 'rat_e_acc',
              'rat_m_rt_mn', 'rat_m_rt_sd', 'rat_m_acc',
              'rat_h_rt_mn', 'rat_h_rt_sd', 'rat_h_acc')
+
+cog_corr <- c('promis_score',  'ds_acc', 'ds_rt_mn', 'ds_rt_sd', 
+             'read_rt_sum', 'type_rt_sum', 
+             'co', 'om', 't_r', 'd', 'hrt_m', 'hrt_s', 'hrt_v',
+             'b_diff', 'om_diff', 'co_diff')
+              
+all <- c('participant_type',
+'gender',
+'sex',
+'race',
+'ethnicity',
+'nicotine_status',
+'rehab_status',
+'unemployment_covid',
+'vaccine_menstrual',
+'med_access',
+'cpt_profile',
+'sus_att',
+'vacc_bi',
+'cardio_bi',
+'tbi_prob',
+'pcs_diag',
+'age',
+'datediff',
+'global_qol_scale',
+'initial_symptom_score',
+'pre_pandemic',
+'promis_score', 
+'hit6_score', 
+'fatigue_score',
+'gad7_tot_score', 
+'phq9_total', 
+'pss_overall_score',
+'social_support_score', 
+'dvprs_score', 
+'dyspnoea_12_score',
+'BMI', 
+'duration', 
+'psqi_glob', 
+'mental',
+'racial_stress',
+'fin_stress',
+'cluster',
+'vs_a_rt_mn_s',
+'vs_a_rt_sd_s', 
+'vs_a_acc_s', 
+'vs_p_rt_mn_s', 
+'vs_p_rt_sd_s', 
+'vs_p_acc_s',
+'vs_a_rt_mn_l',
+'vs_a_rt_sd_l', 
+'vs_a_acc_l',
+'vs_p_rt_mn_l',
+'vs_p_rt_sd_l',
+'vs_p_acc_l',
+'f_c_rt_mn', 
+'f_c_rt_sd', 
+'f_c_acc',
+'f_i_rt_mn', 
+'f_i_rt_sd', 
+'f_i_acc',
+'ds_acc', 
+'ds_rt_mn',
+'ds_rt_sd',
+'read_rt_sum',
+'type_rt_sum', 
+'co', 
+'om', 
+'t_r', 
+'d', 
+'hrt_m', 
+'hrt_s', 
+'hrt_v',
+'b_diff',
+'om_diff',
+'co_diff', 
+'rat_e_rt_mn', 
+'rat_e_rt_sd', 
+'rat_e_acc',
+'rat_m_rt_mn', 
+'rat_m_rt_sd', 
+'rat_m_acc',
+'rat_h_rt_mn',
+'rat_h_rt_sd',
+'rat_h_acc')
+
 ```
 
 ```{r}
@@ -4117,6 +4216,8 @@ match_data1 <- samp_match_data[ , (names(samp_match_data) %in% trim_all)]
 #Cognitive data for brain fog
 cog_data1 <- clean[ , (names(clean) %in% cog_all)]
 
+cog_data2 <- clean[ , (names(clean) %in% all)]
+
 ```
 
 # Export clean datasets for modeling
@@ -4124,7 +4225,8 @@ cog_data1 <- clean[ , (names(clean) %in% cog_all)]
 final_data <- write_csv(final_data1, 'final_data.csv')
 match_data <- write_csv(match_data1, 'match_data.csv')
 cog_data <- write_csv(cog_data1, 'cog_data.csv')
-View(match_data)
+cog_data2 <- write_csv(cog_data2, 'cog_data2.csv')
+#View(match_data)
 ```
 
 # Train/Test Pipeline
