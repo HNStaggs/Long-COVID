@@ -1,5 +1,5 @@
 # Long-COVID
-Understanding Predictive Factors of Long-COVID
+Understanding Predictive Factors of Brain Fog in Long-COVID
 
 ## Background
 Long-COVID is a chronic, multisymptom condition that develops after one or more COVID-19 infections. The diagnostic definition is 12+ weeks since initial infection, one or more new persistent symptoms, and a report of affect on daily functioning. Primary complaints include physical fatigue and brain fog, along with sleep dysfunction and mental health symptoms.
