@@ -1464,6 +1464,8 @@ clean <- merge(rc_drop, gor_final, by = 'prolific_id', all = T)
 
 #Drop people without Prolific ID
 clean <- clean[!is.na(clean$participant_id), ]
+
+View(clean)
 #Drop people without Gorilla ID
 clean <- clean[!is.na(clean$gor_id), ]
 
@@ -1665,11 +1667,35 @@ clean %>% filter(participant_type == 'Vet') %>% summarise(mean_age = mean(age), 
 
 # Age: Civilian
 clean %>% filter(participant_type == 'Civ') %>% summarise(mean_age = mean(age), sd_age = sd(age))
+
+
+# Age: Clinical
+clean %>% filter(pcs_diag == 'PASC') %>% summarise(mean_age = mean(age), sd_age = sd(age))
+
+# Age: Non-Clinical
+clean %>% filter(pcs_diag == 'Healthy') %>% summarise(mean_age = mean(age), sd_age = sd(age))
+
+
+oneway.test(age ~ pcs_diag, data = clean)
+
+
 ```
 ## Particpant Type
 ```{r}
 table(clean$participant_type)
 prop.table(table(clean$participant_type))
+
+clin <- clean %>% filter(pcs_diag == 'PASC')
+nonclin <- clean %>% filter(pcs_diag == 'Healthy')
+
+prop.table(table(clin$participant_type))
+table(clin$participant_type)
+
+prop.table(table(nonclin$participant_type))
+table(nonclin$participant_type)
+
+chisq.test(clean$pcs_diag, clean$participant_type)
+
 ```
 ## Sex
 ```{r}
@@ -1684,6 +1710,17 @@ prop.table(table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_s =
 #Civ
 table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_s = sex))
 prop.table(table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_s = sex)))
+
+
+
+prop.table(table(clin$sex))
+table(clin$sex)
+
+prop.table(table(nonclin$sex))
+table(nonclin$sex)
+
+chisq.test(clean$pcs_diag, clean$sex)
+
 ```
 ## Gender
 ```{r}
@@ -1698,6 +1735,17 @@ prop.table(table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_g =
 #Civ
 table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_g = gender))
 prop.table(table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_g = gender)))
+
+
+
+prop.table(table(clin$gender))
+table(clin$gender)
+
+prop.table(table(nonclin$gender))
+table(nonclin$gender)
+
+chisq.test(clean$pcs_diag, clean$gender)
+
 ```
 ## Ethnicity
 ```{r}
@@ -1714,6 +1762,16 @@ prop.table(table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_e =
 #Civ
 table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_e = ethnicity))
 prop.table(table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_e = ethnicity)))
+
+
+prop.table(table(clin$ethnicity))
+table(clin$ethnicity)
+
+prop.table(table(nonclin$ethnicity))
+table(nonclin$ethnicity)
+
+chisq.test(clean$pcs_diag, clean$ethnicity)
+
 ```
 ## Area Type
 ```{r}
@@ -1728,6 +1786,15 @@ prop.table(table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_a =
 #Civ
 table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_a = residence_location_type))
 prop.table(table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_a = residence_location_type)))
+
+prop.table(table(clin$residence_location_type))
+table(clin$residence_location_type)
+
+prop.table(table(nonclin$residence_location_type))
+table(nonclin$residence_location_type)
+
+chisq.test(clean$pcs_diag, clean$residence_location_type)
+
 ```
 ## Race
 ```{r}
@@ -1742,6 +1809,16 @@ prop.table(table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_r =
 #Civ
 table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_r = race))
 prop.table(table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_r = race)))
+
+
+prop.table(table(clin$race))
+table(clin$race)
+
+prop.table(table(nonclin$race))
+table(nonclin$race)
+
+chisq.test(clean$pcs_diag, clean$race)
+
 ```
 ## Degree
 ```{r}
@@ -1756,6 +1833,18 @@ prop.table(table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_d =
 #Civ
 table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_d = edu_degree))
 prop.table(table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_d = edu_degree)))
+
+
+
+prop.table(table(clin$edu_degree))
+table(clin$edu_degree)
+
+prop.table(table(nonclin$edu_degree))
+table(nonclin$edu_degree)
+
+
+
+chisq.test(clean$pcs_diag, clean$edu_degree)
 ```
 
 ## PASC Diagnosis
@@ -1771,6 +1860,13 @@ prop.table(table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_p =
 #Civ
 table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_p = pcs_diag))
 prop.table(table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_p = pcs_diag)))
+
+
+prop.table(table(clin$pcs_diag))
+table(clin$pcs_diag)
+
+prop.table(table(nonclin$pcs_diag))
+table(nonclin$pcs_diag)
 ```
 ## Vaccine Status
 ```{r}
@@ -1785,6 +1881,17 @@ prop.table(table(clean %>% filter(participant_type == 'Vet') %>% reframe(vet_v =
 #Civ
 table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_v = vaccboost))
 prop.table(table(clean %>% filter(participant_type == 'Civ') %>% reframe(civ_v = vaccboost)))
+
+
+prop.table(table(clin$vaccboost))
+table(clin$vaccboost)
+
+prop.table(table(nonclin$vaccboost))
+table(nonclin$vaccboost)
+
+
+chisq.test(clean$pcs_diag, clean$vaccboost)
+
 ```
 ## Reading Speed
 ```{r}
@@ -3870,6 +3977,21 @@ chisq.test(clean$cluster, clean$pcs_diag)
 table(clean$cluster, clean$pcs_diag)
 
 ```
+```{r}
+# Summary cluster values for data vis
+p <- c(.042, .409, .012, 0, .978, .562)
+m <- c(0, .172, .956, 0, .00596, .399)
+s <- c(.958, .418, .032, 0, .016, .039)
+l <- c(7, 115, 27, 4, 58, 67)
+n <- c(12, 143, 41, 404, 114, 79)
+pr <- round(l/n, 2)
+
+cluster_df <- data.frame(p, m, s, l, n, pr)
+#View(cluster_df)
+
+```
+
+
 
 # Bringing in Item Level PROMIS Cog to un-do reverse-scoring
 ```{R}
@@ -4007,6 +4129,7 @@ plot(summary(samp_match))
 samp_match_data <- match.data(samp_match)
 #View(samp_match_data)
 
+dim(samp_match_data)
 # Create testing set with IDs NOT in match list
 id_list <- list(samp_match_data$prolific_id)
 #id_list
@@ -4226,6 +4349,7 @@ final_data <- write_csv(final_data1, 'final_data.csv')
 match_data <- write_csv(match_data1, 'match_data.csv')
 cog_data <- write_csv(cog_data1, 'cog_data.csv')
 cog_data2 <- write_csv(cog_data2, 'cog_data2.csv')
+clust_df <- write_csv(cluster_df, 'clust_df.csv')
 #View(match_data)
 ```
 
@@ -4242,3 +4366,83 @@ cog_data2 <- write_csv(cog_data2, 'cog_data2.csv')
 ## Focus on feature importance/contributions for clinical interpretation
 
 ## Hausekeep package for exporting results for papers
+
+# Demographic Stats for Paper Table
+```{r}
+# Age by participant type
+oneway.test(log(age) ~ participant_type, data = clean)
+
+chisq.test(clean$participant_type, clean$sex)
+chisq.test(clean$participant_type, clean$gender)
+chisq.test(clean$participant_type, clean$ethnicity)
+
+chisq.test(clean$participant_type, clean$residence_location_type)
+
+chisq.test(clean$participant_type, clean$race)
+chisq.test(clean$participant_type, clean$edu_degree)
+
+chisq.test(clean$participant_type, clean$pcs_diag)
+chisq.test(clean$participant_type, clean$vaccboost)
+
+```
+
+## Timestamp data 
+```{r}
+times <- read_csv('vet_timestamps.csv')
+#View(time_list)
+
+
+time_list <- c('participant_id','introduction_timestamp','part_2_link_timestamp')
+
+times <- times[ , (names(times) %in% time_list)]
+times <- drop_na(times)
+times$introduction_timestamp <- as_datetime(times$introduction_timestamp)
+
+times$timetaken <- times$part_2_link_timestamp-times$introduction_timestamp
+times$timetaken <- as.numeric(times$timetaken)
+
+str(times)
+
+View(p1)
+p1 <- read_csv('prolific_1.csv')
+p2 <- read_csv('prolific_2.csv')
+p3 <- read_csv('prolific_3.csv')
+p4 <- read_csv('prolific_4.csv')
+p5 <- read_csv('prolific_5.csv')
+p6 <- read_csv('prolific_6.csv')
+
+p1 <- p1[ , 8]
+p2 <- p2[ , 8]
+p3 <- p3[ , 8]
+p4 <- p4[ , 8]
+p5 <- p5[ , 8]
+p6 <- p6[ , 8]
+
+View(times2)
+times2 <- rbind(p1,p2,p3,p4,p5,p6)
+str(times2)
+
+
+colnames(times2)[1] <- 'timetaken'
+times2$timetaken <- round(times2$timetaken/60, 2)
+
+times2 <- drop_na(times2)
+time_all <- rbind(times2, times[, 4])
+time_all <- time_all %>% filter(timetaken < 300 & timetaken > 20)
+
+
+hist(time_all$timetaken)
+
+median(time_all$timetaken)
+mean(time_all$timetaken)
+sd(time_all$timetaken)
+min(time_all$timetaken)
+View(time_all)
+
+table(clean$diagnosis_type)
+
+self <- clean %>% filter(diagnosis_type == 3)
+View(self)
+
+prop.table(table(clean$pcs_diag))
+```
