@@ -3898,13 +3898,27 @@ clean$physical_sum <- clean$headache + clean$ent + clean$fatigue +
   clean$aguesia + clean$lungs + clean$vasomotor
 ```
 
-# Mental Health and Cognitive Symptoms - binary coded if reported
+# Mental Health and Brain Fog - binary coded if reported
 ```{r}
 clean$brainfog <- if_else(clean$brainfog_2 > 0, 1, 0)
 clean$anxiety <- if_else(clean$anxiety_2 > 0, 1, 0)
 clean$depression <- if_else(clean$depression_2 > 0, 1, 0)
 # Total amount of mental health and cognitive symptoms
-clean$mental_sum <- (clean$brainfog + clean$anxiety + clean$depression)
+clean$mental_sum <- (clean$anxiety + clean$depression + clean$brainfog) 
+```
+
+```{R}
+table(clean$brainfog_2)
+table(clean$anxiety_2)
+table(clean$depression_2)
+
+# Number of people without brain fog and only depression or anxiety
+clean$brainfog_test <- if_else(clean$brainfog_2 == 0 & clean$mental_sum > 0, 1, 0)
+table(clean$brainfog_test)
+
+# Number of people with only brain fog and no depression or anxiety
+clean$brainfog_test2 <- if_else(clean$brainfog_2 >0 & clean$mental_sum == 1, 1, 0)
+table(clean$brainfog_test2)
 ```
 
 # Sleep Symptoms - binary coded if reported   
@@ -4349,7 +4363,7 @@ final_data <- write_csv(final_data1, 'final_data.csv')
 match_data <- write_csv(match_data1, 'match_data.csv')
 cog_data <- write_csv(cog_data1, 'cog_data.csv')
 cog_data2 <- write_csv(cog_data2, 'cog_data2.csv')
-clust_df <- write_csv(cluster_df, 'clust_df.csv')
+#clust_df <- write_csv(cluster_df, 'clust_df.csv')
 #View(match_data)
 ```
 
