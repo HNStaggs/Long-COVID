@@ -987,7 +987,7 @@ rc <- rc %>% filter(!is.na(vdaq_score))
 ## PCS Diagnosis
 ```{r}
 # PCS Diagnosis time frame
-#View(rc)
+View(rc)
 rc$datediff <- abs(round(difftime(rc$intro_date, rc$covid_start, units = 'weeks'),1))
 rc$datediff <- gsub(' weeks', '', rc$datediff)
 rc$datediff <- as.numeric(rc$datediff)
@@ -1005,6 +1005,18 @@ rc$pcs_diag <- if_else((rc$dd_bin == 'PCS' & rc$persistent_symptom_amount >= 1 &
 #verify proportions of folks with PCS
 table(rc$pcs_diag) # 533, 298
 prop.table(table(rc$pcs_diag))  # 64.1 % , 35.9 %
+
+# Manually inspect people with missing PCS diagnosis
+na_pcs <- rc %>% filter(is.na(pcs_diag)) %>% select(prolific_id, intro_date, covid_start, datediff, dd_bin,
+                                                           persistent_symptom_amount, pcfs_subjective_scale)
+na_pcs
+
+# ID 64 manual check for diagnosis criteria
+rc$datediff <- ifelse(rc$prolific_id == 64, difftime(rc$intro_date, rc$covid_test_date, units = "weeks"), rc$datediff)  # Weeks between study and covid infection based on testing date
+
+rc$dd_bin <- ifelse(rc$prolific_id == 64 & rc$datediff >= 12, "PCS", rc$dd_bin) # Update dd_bin variable to "pcs"
+
+rc$pcs_diag <- ifelse((rc$prolific_id == 64 & rc$dd_bin == 'PCS' & rc$persistent_symptom_amount >= 1 & rc$pcfs_subjective_scale != '1'), 1, rc$pcs_diag) # Update pcs_diag
 
 #data vis for PCS proportion
 ggplot(data = rc, aes(x = as.factor(pcs_diag), fill = as.factor(pcs_diag))) + 
@@ -1655,7 +1667,6 @@ prop.table(table(clean$pcs_diag))
 
 ```
 
-
 # Descriptive Stats for Demographic Table
 ## Age
 ```{r}
@@ -2106,8 +2117,9 @@ oneway.test(post_infection~pcs_diag, data = clean)
 ```{r}
 # PROMIS cog score (reverse scored) x. PCS diagnosis
 promiscog <- ggplot(clean, aes(promis_cog_score, fill = pcs_diag)) + 
-  geom_histogram(color = 'black', position = 'fill', stat = 'count') +
-  theme_minimal() #+
+  geom_histogram(color = 'black', position = 'fill', stat = 'count', bins = 32) +
+  theme_minimal() +
+  geom_hline(yintercept = 0.5, linetype = "solid", color = "black")
   #scale_x_discrete(limits = c(0:11))
 ggpar(promiscog, title = "PROMIS Cognition Score by PCS Diagnosis", xlab = 'Score (reverse)', ylab = 'Count', legend.title = 'Group')
 ```
@@ -3601,7 +3613,10 @@ cor.test(pasc$datediff, pasc$persistent_symptom_score)
 ```{r}
 cor.test(pasc$datediff, as.numeric(pasc$pcfs_grade_status))
 ```
+```{r}
+table(clean$pcs_diag)
 
+```
 # Symptom Profile Analysis
 ```{r}
 pcs <- rc_drop %>% filter(pcs_diag == 1)
@@ -3756,12 +3771,13 @@ pcs_cloud_df <- pcs_cloud_df_prep[order(-pcs_cloud_df_prep$prop),]
 
 #barplot of all symptoms
 #View(pcs_cloud_df)
-pcs_cloud_df$color <- if_else(pcs_cloud_df$word == 'Fatigue' | pcs_cloud_df$word == 'Insomnia' |
-                                pcs_cloud_df$word == 'BrainFog' | pcs_cloud_df$word == 'Exertion' |
-                                pcs_cloud_df$word == 'DaytimeSleepy', 'red', 'grey')
+pcs_cloud_df$color <- if_else(pcs_cloud_df$word == 'Fatigue' | pcs_cloud_df$word == 'BrainFog', 'red', 'grey')
+                                #pcs_cloud_df$word == 'Insomnia' |
+                                #pcs_cloud_df$word == 'BrainFog' | pcs_cloud_df$word == 'Exertion' |
+                                #pcs_cloud_df$word == 'DaytimeSleepy', 'red', 'grey')
 
 pcs_bar <- ggplot(data = pcs_cloud_df[1:20,], aes(x = reorder(word, +freq), fill = color, y = prop)) + geom_bar(stat = 'identity', show.legend = F) + 
-  labs(title = 'Top 20 PASC Symptoms', x = 'Symptom', y = 'Proportion of Sample (n=294)') +
+  labs(title = 'Top 20 Long COVID Symptoms', x = 'Symptom', y = 'Proportion of Sample (n=278)') +
   coord_flip() + 
   theme_minimal() + 
   geom_text(aes(label=prop), hjust = -0.5, size=3.5) +
@@ -4116,6 +4132,21 @@ clean <- merge(clean, promis_trim, by = 'prolific_id', all.x=T)
 
 ```
 
+# Look at Reverse-Score Graph
+```{r}
+# PROMIS cog score (reverse scored) x. PCS diagnosis
+promiscog2 <- ggplot(clean, aes(promis_score, fill = pcs_diag)) + 
+  geom_histogram(color = 'black', position = 'fill', stat = 'count', bins = 32) +
+  theme_minimal() +
+  geom_hline(yintercept = 0.5, linetype = "solid", color = "black")
+  #scale_x_discrete(limits = c(0:11))
+ggpar(promiscog2, title = "PROMIS Score by PCS Diagnosis", xlab = 'Score', ylab = 'Count', legend.title = 'Group')
+
+clean %>% filter(pcs_diag == 'PASC') %>% summarise(median = median(as.numeric(promis_score)))
+clean %>% filter(pcs_diag == 'Healthy') %>% summarise(median = median(as.numeric(promis_score)))
+```
+
+
 # Reduce some of the cognitive variable redundancy
 ```{r}
 # R, n, and p values for each variable correlation.
@@ -4164,7 +4195,6 @@ dim(clean)[1]
 prop.test(x = c(114, 278),
           n = c(298, 793))  # Non-sig difference between samples
 ```
-
 
 # Data Preparation for Modeling
 * Check for highly correlated variables and collapse features
@@ -4350,6 +4380,10 @@ match_data1 <- samp_match_data[ , (names(samp_match_data) %in% trim_all)]
 # Dropped/unmatched data used for testing
 #dropmatch_data1 <- samp_match_drop[ , (names(samp_match_drop) %in% trim_all)]
 
+
+
+
+
 #Cognitive data for brain fog
 cog_data1 <- clean[ , (names(clean) %in% cog_all)]
 
@@ -4459,4 +4493,12 @@ self <- clean %>% filter(diagnosis_type == 3)
 View(self)
 
 prop.table(table(clean$pcs_diag))
+```
+```{r}
+View(clean)
+
+prop.table(table(clean$pcs_diag))
+
+dim(clean)
+
 ```
