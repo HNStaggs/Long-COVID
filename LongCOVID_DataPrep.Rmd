@@ -3776,15 +3776,23 @@ pcs_cloud_df$color <- if_else(pcs_cloud_df$word == 'Fatigue' | pcs_cloud_df$word
                                 #pcs_cloud_df$word == 'BrainFog' | pcs_cloud_df$word == 'Exertion' |
                                 #pcs_cloud_df$word == 'DaytimeSleepy', 'red', 'grey')
 
-pcs_bar <- ggplot(data = pcs_cloud_df[1:20,], aes(x = reorder(word, +freq), fill = color, y = prop)) + geom_bar(stat = 'identity', show.legend = F) + 
-  labs(title = 'Top 20 Long COVID Symptoms', x = 'Symptom', y = 'Proportion of Sample (n=278)') +
+library(extrafont)
+#change font to TNR
+windowsFonts(A = windowsFont('Times New Roman'))
+
+pcs_bar <- ggplot(data = pcs_cloud_df[1:15,], aes(x = reorder(word, +freq), fill = color, y = prop)) + geom_bar(stat = 'identity', show.legend = F) + 
+  labs(x = 'Symptom', y = 'Proportion of Sample') +
   coord_flip() + 
-  theme_minimal() + 
+  theme_minimal(base_family = "Times New Roman") + 
   geom_text(aes(label=prop), hjust = -0.5, size=3.5) +
   ylim(0,1) +
-  scale_fill_manual(values = c('grey','red'))
+  scale_fill_manual(values = c('grey','red')) +
+  theme(text = element_text(size = 16, family = 'A'))
 
 pcs_bar
+
+# Save Plot
+ggsave("pcs_bar_plot.png", plot = pcs_bar, width = 8, height = 6, dpi = 300)
 
 #compute cloud
 #set.seed(1)
@@ -3795,7 +3803,7 @@ pcs_bar
 
 #ggarrange(pcs_bar, gwi_bar, ncol = 2, nrow = 1)
 #table(clean$participant_type)
-
+print(getwd())
 ```
 
 
@@ -3982,14 +3990,16 @@ clean$sleep_prop[is.na(clean$sleep_prop)] <- 0
 #View(clean)
 # Run K means
 set.seed(2)
-kmns_symp <- kmeans(clean[ , c(184:186)], centers = 6)  # Proportion of sleep, mental health, and physical symptoms
+kmns_symp <- kmeans(clean[ , c(186:188)], centers = 6)  # Proportion of sleep, mental health, and physical symptoms
 
 # Look at K means information
 kmns_symp
 ## 
 
 # Visualize clusters
-fviz_cluster(kmns_symp, data = clean[ , c(184:186)], geom = c('point','text')) + theme_minimal()
+cluster_plot <- fviz_cluster(kmns_symp, data = clean[ , c(186:188)], geom = c('point','text')) + theme_minimal()
+
+ggsave('cluster_plot.png', cluster_plot, dpi = 300)
 
 # Cluster assignments as grouping variable
 clean$cluster <- as.factor(kmns_symp$cluster)
