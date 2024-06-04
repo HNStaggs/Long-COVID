@@ -765,44 +765,6 @@ dim(rc) #902 rows x. 172 columns
 #summary(rc)
 ```
 
-
-```{R}
-#Extracting everyone's medications from free text data
-#install.packages('qdap')
-#library(qdap)
-#library(dplyr)
-#library(tm)
-#library(wordcloud)
-#library(plotrix)
-#library(dendextend)
-#library(ggplot2)
-#library(ggthemes)
-#install.packages('RWeka')
-#library(RWeka)
-
-#corpus <- VCorpus(rc$medsinfo)
-
-#clean_corpus <- function(corpus){
-  #corpus <- tm_map(corpus, stripWhitespace)
-  #corpus <- tm_map(corpus, removePunctuation)
-  #corpus <- tm_map(corpus, content_transformer(tolower))
-  #corpus <- tm_map(corpus, removeWords, stopwords("en"))
-  #return(corpus)
-#}
- 
-#freqs <- TermDocumentMatrix(rc$medsinfo)
-#med_mat <- as.matrix(freqs)
-# Calculate the rowSums: term_frequency
-#term_frequency <- rowSums(med_mat)
-
-# Sort term_frequency in descending order
-#term_frequency <- sort(term_frequency, decreasing = F)
-
-# View the uncommon
-#term_frequency
-```
-
-
 # Impute NAs as zeroes for sparse PCS symptom data
 ```{r}
 rc$fever_2[is.na(rc$fever_2)] <- 0
@@ -987,7 +949,7 @@ rc <- rc %>% filter(!is.na(vdaq_score))
 ## PCS Diagnosis
 ```{r}
 # PCS Diagnosis time frame
-View(rc)
+#View(rc)
 rc$datediff <- abs(round(difftime(rc$intro_date, rc$covid_start, units = 'weeks'),1))
 rc$datediff <- gsub(' weeks', '', rc$datediff)
 rc$datediff <- as.numeric(rc$datediff)
@@ -1477,7 +1439,7 @@ clean <- merge(rc_drop, gor_final, by = 'prolific_id', all = T)
 #Drop people without Prolific ID
 clean <- clean[!is.na(clean$participant_id), ]
 
-View(clean)
+#View(clean)
 #Drop people without Gorilla ID
 clean <- clean[!is.na(clean$gor_id), ]
 
@@ -1642,11 +1604,11 @@ clean$vaccine_menstrual <- as.factor(clean$vaccine_menstrual)
 table(clean$vaccine_menstrual)
 
 #tbi probable diagnoses
-clean$tbi_prob <- as.character(clean$tbi_prob)
-clean$tbi_prob[clean$tbi_prob == 0] <- 'None'
-clean$tbi_prob[clean$tbi_prob == 1] <- 'Mild'
-clean$tbi_prob[clean$tbi_prob == 2] <- 'Mod'
-clean$tbi_prob[clean$tbi_prob == 3] <- 'Sev'
+#clean$tbi_prob <- as.character(clean$tbi_prob)
+#clean$tbi_prob[clean$tbi_prob == 0] <- 'None'
+#clean$tbi_prob[clean$tbi_prob == 1] <- 'Mild'
+#clean$tbi_prob[clean$tbi_prob == 2] <- 'Mod'
+#clean$tbi_prob[clean$tbi_prob == 3] <- 'Sev'
 clean$tbi_prob <- as.factor(clean$tbi_prob)
 table(clean$tbi_prob)
 
@@ -2827,7 +2789,7 @@ oneway.test(t_r~pcs_diag, data = clean)
 #sort(clean$d, decreasing = T)
 #clean$d[clean$d > 1] <- 0.169014085
 
-cptd <- ggplot(clean%>%filter(d<5), aes(d, fill = pcs_diag)) + 
+cptd <- ggplot(clean%>%filter(d<1), aes(d, fill = pcs_diag)) + 
   geom_dotplot(position = 'jitter') +
   theme_minimal() #+
   #scale_x_discrete(limits = c(0:7))
@@ -3813,7 +3775,7 @@ print(getwd())
 clean$vacc_bi <- if_else(clean$vacc_inf_diff >= 0, 1, 2)
 clean$vacc_bi[is.na(clean$vacc_bi)] <- 0
 clean$vacc_bi <- as.character(clean$vacc_bi)
-clean$vacc_bi[clean$vacc_bi == 0] <- 'None'
+clean$vacc_bi[clean$vacc_bi == 0] <- 'Never'
 clean$vacc_bi[clean$vacc_bi == 1] <- 'After'
 clean$vacc_bi[clean$vacc_bi == 2] <- 'Before'
 clean$vacc_bi <- as.factor(clean$vacc_bi)
@@ -4375,6 +4337,8 @@ all <- c('participant_type',
 # Whole, unmatched dataset
 final_data1 <- clean[ , (names(clean) %in% trim_all)]
 #View(final_data1)
+table(final_data1$tbi_prob)
+
 
 # Verify features
 #colnames(final_data1)
@@ -4405,7 +4369,7 @@ cog_data2 <- clean[ , (names(clean) %in% all)]
 ```{r}
 final_data <- write_csv(final_data1, 'final_data.csv')
 match_data <- write_csv(match_data1, 'match_data.csv')
-cog_data <- write_csv(cog_data1, 'cog_data.csv')
+#cog_data <- write_csv(cog_data1, 'cog_data.csv')
 cog_data2 <- write_csv(cog_data2, 'cog_data2.csv')
 #clust_df <- write_csv(cluster_df, 'clust_df.csv')
 #View(match_data)
@@ -4442,6 +4406,8 @@ chisq.test(clean$participant_type, clean$edu_degree)
 chisq.test(clean$participant_type, clean$pcs_diag)
 chisq.test(clean$participant_type, clean$vaccboost)
 
+
+oneway.test(log(promis_score) ~ pcs_diag, data = clean)
 ```
 
 ## Timestamp data 
@@ -4461,7 +4427,7 @@ times$timetaken <- as.numeric(times$timetaken)
 
 str(times)
 
-View(p1)
+#View(p1)
 p1 <- read_csv('prolific_1.csv')
 p2 <- read_csv('prolific_2.csv')
 p3 <- read_csv('prolific_3.csv')
@@ -4476,7 +4442,7 @@ p4 <- p4[ , 8]
 p5 <- p5[ , 8]
 p6 <- p6[ , 8]
 
-View(times2)
+#View(times2)
 times2 <- rbind(p1,p2,p3,p4,p5,p6)
 str(times2)
 
@@ -4495,20 +4461,21 @@ median(time_all$timetaken)
 mean(time_all$timetaken)
 sd(time_all$timetaken)
 min(time_all$timetaken)
-View(time_all)
+#View(time_all)
 
 table(clean$diagnosis_type)
 
 self <- clean %>% filter(diagnosis_type == 3)
-View(self)
+#View(self)
 
 prop.table(table(clean$pcs_diag))
 ```
 ```{r}
-View(clean)
+#View(clean)
 
 prop.table(table(clean$pcs_diag))
 
 dim(clean)
 
+mean(clean$promis_cog_score)
 ```
