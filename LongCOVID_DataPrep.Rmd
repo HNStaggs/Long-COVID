@@ -974,11 +974,11 @@ na_pcs <- rc %>% filter(is.na(pcs_diag)) %>% select(prolific_id, intro_date, cov
 na_pcs
 
 # ID 64 manual check for diagnosis criteria
-rc$datediff <- ifelse(rc$prolific_id == 64, difftime(rc$intro_date, rc$covid_test_date, units = "weeks"), rc$datediff)  # Weeks between study and covid infection based on testing date
+#rc$datediff <- ifelse(rc$prolific_id == 64, difftime(rc$intro_date, rc$covid_test_date, units = "weeks"), rc$datediff)  # Weeks between study and covid infection based on testing date
 
-rc$dd_bin <- ifelse(rc$prolific_id == 64 & rc$datediff >= 12, "PCS", rc$dd_bin) # Update dd_bin variable to "pcs"
+#rc$dd_bin <- ifelse(rc$prolific_id == 64 & rc$datediff >= 12, "PCS", rc$dd_bin) # Update dd_bin variable to "pcs"
 
-rc$pcs_diag <- ifelse((rc$prolific_id == 64 & rc$dd_bin == 'PCS' & rc$persistent_symptom_amount >= 1 & rc$pcfs_subjective_scale != '1'), 1, rc$pcs_diag) # Update pcs_diag
+#rc$pcs_diag <- ifelse((rc$prolific_id == 64 & rc$dd_bin == 'PCS' & rc$persistent_symptom_amount >= 1 & rc$pcfs_subjective_scale != '1'), 1, rc$pcs_diag) # Update pcs_diag
 
 #data vis for PCS proportion
 ggplot(data = rc, aes(x = as.factor(pcs_diag), fill = as.factor(pcs_diag))) + 
@@ -3754,7 +3754,7 @@ pcs_bar <- ggplot(data = pcs_cloud_df[1:15,], aes(x = reorder(word, +freq), fill
 pcs_bar
 
 # Save Plot
-ggsave("pcs_bar_plot.png", plot = pcs_bar, width = 8, height = 6, dpi = 300)
+ggsave("pcs_bar_plot.png", plot = pcs_bar, width = 4, height = 3, dpi = 300)
 
 #compute cloud
 #set.seed(1)
@@ -4130,7 +4130,7 @@ clean %>% filter(pcs_diag == 'Healthy') %>% summarise(median = median(as.numeric
 ```{r}
 # Make matched Veteran/Civilian sample based on age, sex, and education
 # Fill in NA values for outcome variable
-samp_match <- matchit(participant_type ~ age + sex + edu_degree, clean, 
+samp_match <- matchit(participant_type ~ age + sex, clean, 
                       method = 'exact', distance= 'glm', link = 'probit')
 samp_match
 summary(samp_match)
@@ -4149,9 +4149,12 @@ samp_match_data <- match.data(samp_match)
 dim(samp_match_data)
 # Create testing set with IDs NOT in match list
 id_list <- list(samp_match_data$prolific_id)
+
 #id_list
-samp_match_test <- clean[!(clean$prolific_id %in% id_list), ]
+#samp_match_test <- clean[!(clean$prolific_id %in% id_list), ]
 #View(samp_match_test)
+
+#dim(samp_match_test)
 ```
 
 # Vertify proportion of outcome variable in new dataset is not different from parent dataset
@@ -4319,6 +4322,171 @@ all <- c('participant_type',
 'rat_h_rt_sd',
 'rat_h_acc')
 
+clean_id <- c('prolific_id', 'participant_type',
+'gender',
+'sex',
+'race',
+'ethnicity',
+'nicotine_status',
+'rehab_status',
+'unemployment_covid',
+'vaccine_menstrual',
+'med_access',
+'cpt_profile',
+'sus_att',
+'vacc_bi',
+'cardio_bi',
+'tbi_prob',
+'pcs_diag',
+'age',
+'datediff',
+'global_qol_scale',
+'initial_symptom_score',
+'pre_pandemic',
+'promis_score', 
+'hit6_score', 
+'fatigue_score',
+'gad7_tot_score', 
+'phq9_total', 
+'pss_overall_score',
+'social_support_score', 
+'dvprs_score', 
+'dyspnoea_12_score',
+'BMI', 
+'duration', 
+'psqi_glob', 
+'mental',
+'racial_stress',
+'fin_stress',
+'cluster',
+'vs_a_rt_mn_s',
+'vs_a_rt_sd_s', 
+'vs_a_acc_s', 
+'vs_p_rt_mn_s', 
+'vs_p_rt_sd_s', 
+'vs_p_acc_s',
+'vs_a_rt_mn_l',
+'vs_a_rt_sd_l', 
+'vs_a_acc_l',
+'vs_p_rt_mn_l',
+'vs_p_rt_sd_l',
+'vs_p_acc_l',
+'f_c_rt_mn', 
+'f_c_rt_sd', 
+'f_c_acc',
+'f_i_rt_mn', 
+'f_i_rt_sd', 
+'f_i_acc',
+'ds_acc', 
+'ds_rt_mn',
+'ds_rt_sd',
+'read_rt_sum',
+'type_rt_sum', 
+'co', 
+'om', 
+'t_r', 
+'d', 
+'hrt_m', 
+'hrt_s', 
+'hrt_v',
+'b_diff',
+'om_diff',
+'co_diff', 
+'rat_e_rt_mn', 
+'rat_e_rt_sd', 
+'rat_e_acc',
+'rat_m_rt_mn', 
+'rat_m_rt_sd', 
+'rat_m_acc',
+'rat_h_rt_mn',
+'rat_h_rt_sd',
+'rat_h_acc')
+
+View(rc)
+rural_vars <- c('prolific_id',
+                'participant_type',
+                'residence_location_type',
+                'pcs_diag',
+                'meds',
+                'age',
+                'BMI',
+                'sex',
+                'race',
+                'phq9_total',
+                'gad7_tot_score',
+                'medsinfo',
+                'neuro',
+                'health_other_1',
+                'health_other_2',
+                'health_other_3',
+                'pss_overall_score',
+                'healthcare_access',
+                'fin_stress',
+                'racial_stress',
+                'social_support_score',
+                'unemployment_covid',
+                'menopause_status',
+                'tbi_prob',
+                'hit6_score',
+                'psqi_glob',
+                'edu_degree',
+                'income',
+                'income_2',
+                'household',
+                'household1',
+                'global_qol_score',
+                'nicotine_status',
+                'alcohol_fx',
+                'substance_use_status'
+                )
+
+
+cog2 <- c('prolific_id',
+          'vs_a_rt_mn_s',
+'vs_a_rt_sd_s', 
+'vs_a_acc_s', 
+'vs_p_rt_mn_s', 
+'vs_p_rt_sd_s', 
+'vs_p_acc_s',
+'vs_a_rt_mn_l',
+'vs_a_rt_sd_l', 
+'vs_a_acc_l',
+'vs_p_rt_mn_l',
+'vs_p_rt_sd_l',
+'vs_p_acc_l',
+'f_c_rt_mn', 
+'f_c_rt_sd', 
+'f_c_acc',
+'f_i_rt_mn', 
+'f_i_rt_sd', 
+'f_i_acc',
+'ds_acc', 
+'ds_rt_mn',
+'ds_rt_sd',
+'read_rt_sum',
+'type_rt_sum', 
+'co', 
+'om', 
+'t_r', 
+'d', 
+'hrt_m', 
+'hrt_s', 
+'hrt_v',
+'b_diff',
+'om_diff',
+'co_diff', 
+'rat_e_rt_mn', 
+'rat_e_rt_sd', 
+'rat_e_acc',
+'rat_m_rt_mn', 
+'rat_m_rt_sd', 
+'rat_m_acc',
+'rat_h_rt_mn',
+'rat_h_rt_sd',
+'rat_h_acc',
+'cpt_profile',
+'sus_att')
+
 ```
 
 ```{r}
@@ -4363,10 +4531,25 @@ cog_data1 <- clean[ , (names(clean) %in% cog_all)]
 
 cog_data2 <- clean[ , (names(clean) %in% all)]
 
+cog_id <- clean[ , (names(clean) %in% clean_id)]
+
+
+# Rural Vet Dataset
+rural_data <- rc[ , (names(rc) %in% rural_vars)]
+rural_cog <- clean[, (names(clean) %in% cog2)]
+
+rural <- merge(rural_data, rural_cog, by = "prolific_id", all.x = TRUE)
+View(rural)
+
+
+# Write the data frame to a CSV file
+write.csv(rural, 'rural.csv', row.names=FALSE)
+
 ```
 
 # Export clean datasets for modeling
 ```{r}
+
 final_data <- write_csv(final_data1, 'final_data.csv')
 match_data <- write_csv(match_data1, 'match_data.csv')
 #cog_data <- write_csv(cog_data1, 'cog_data.csv')
